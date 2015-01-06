@@ -200,6 +200,15 @@ $dom->documentElement->namespaceURI; // http://www.example.com
 
 ```
 
+## Parser and Serializer Options
+  
+* `disableHtmlNsInDom` (boolean):
+ * If `true`, HTML DOM nodes are not namespaced.
+ * If not set or `false`, HTML nodes are namespaced ( using `http://www.w3.org/1999/xhtml` namespace) as by official specs.
+* `targetDocument` (instanceof `DOMNode`):
+ * If set, the resulting DOM nodes from the HTML parsing will be appended as its childrens.
+ * If not set, to store the resulting DOM nodes from the HTML parsing a new `DOMDocument` or `DOMDocumentFragment` will be created.
+
 ## Thanks to...
 
 The dedicated (and patient) contributors of patches small and large,
