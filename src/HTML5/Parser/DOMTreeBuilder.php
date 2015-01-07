@@ -38,6 +38,14 @@ class DOMTreeBuilder implements EventHandler
 
     const NAMESPACE_XMLNS = 'http://www.w3.org/2000/xmlns/';
 
+    // The disable_html_ns option.
+    const OPT_DISABLE_HTML_NS = 'disable_html_ns';
+    // The target_document option.
+    const OPT_TARGET_DOC = 'target_document';
+
+    // The implicitNamespaces options.
+    const OPT_IMPLICIT_NS = 'implicit_namespaces';
+
     /**
      * Holds the HTML5 element names that causes a namespace switch
      *
@@ -157,8 +165,8 @@ class DOMTreeBuilder implements EventHandler
     {
         $this->options = $options;
 
-        if (isset($options['targetDocument'])) {
-            $this->doc = $options['targetDocument'];
+        if (isset($options[self::OPT_TARGET_DOC])) {
+            $this->doc = $options[self::OPT_TARGET_DOC];
         } else {
             $impl = new \DOMImplementation();
             // XXX:
@@ -175,8 +183,17 @@ class DOMTreeBuilder implements EventHandler
         // Create a rules engine for tags.
         $this->rules = new TreeBuildingRules($this->doc);
 
-        // Fill $nsStack with the defalut HTML5 namespaces, plus the "implicitNamespaces" array taken form $options
-        array_unshift($this->nsStack, (isset($this->options["implicitNamespaces"]) ? $this->options["implicitNamespaces"] : array()) + array(
+        // Additional namespaces. Note legacy support for implicitNamespaces
+        // option name.
+        $implicitNS = array();
+        if (isset($this->options[self::OPT_IMPLICIT_NS])) {
+            $implicitNS = $this->options[self::OPT_IMPLICIT_NS];
+        } elseif (isset($this->options["implicitNamespaces"])) {
+            $implicitNS = $this->options["implicitNamespaces"];
+        }
+
+        // Fill $nsStack with the defalut HTML5 namespaces, plus the implicitNS array
+        array_unshift($this->nsStack, $implicitNS + array(
             '' => self::NAMESPACE_HTML
         ) + $this->implicitNamespaces);
 
@@ -349,7 +366,7 @@ class DOMTreeBuilder implements EventHandler
                 $ele = $this->doc->importNode($frag->documentElement, true);
 
             } else {
-                if (!isset($this->nsStack[0][$prefix]) || ($prefix === "" && isset($this->options['disableHtmlNsInDom']) && $this->options['disableHtmlNsInDom'])) {
+                if (!isset($this->nsStack[0][$prefix]) || ($prefix === "" && isset($this->options[self::OPT_DISABLE_HTML_NS]) && $this->options[self::OPT_DISABLE_HTML_NS])) {
                     $ele = $this->doc->createElement($lname);
                 } else {
                     $ele = $this->doc->createElementNS($this->nsStack[0][$prefix], $lname);

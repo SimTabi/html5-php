@@ -1,8 +1,9 @@
 ## HTML5-PHP License
 
-Copyright (c) 2013 The Authors of HTML5-PHP
+Copyright (c) 2013-2015 The Authors of HTML5-PHP
+Copyright (c) 2015 Google
 
-Matt Butcher - technosophos@gmail.com
+Matt Butcher - mattbutcher@google.com
 Matt Farina - matt@mattfarina.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
